@@ -1,14 +1,12 @@
-import {Column, DataSource, Entity, PrimaryGeneratedColumn} from "typeorm";
-
-const flights = [];
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
-export class Flight {
+export class Flight extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
   @Column()
-  flightNum: number
+  flightNum: string
 
   @Column()
   airline: string

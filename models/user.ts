@@ -1,15 +1,13 @@
-// const users = [];
-//
-// module.exports = class User {
-//   constructor(login, pass, role) {
-//   this.login = login;
-//   this.pass = pass;
-//   this.role = role;
-//   }
-//   save() {
-//     users.push(this);
-//   }
-//   static getAll() {
-//     return users;
-//   }
-// }
+import {BaseEntity, Column, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
+
+export class User extends BaseEntity{
+    @PrimaryColumn()
+    login: string
+
+    @Column()
+    password: string
+
+    @Column()
+    role: string
+}
+
