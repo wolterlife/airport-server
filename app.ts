@@ -1,10 +1,31 @@
+const sql = require("mssql");
 const express = require('express');
 const router = require('./router')
+const {DataSource} = require("typeorm");
+const {Flight} = require("./models/flight");
 const app = express();
 const port = 3000;
-
 const jsonBodyMiddleware = express.json();
-app.use(jsonBodyMiddleware)
+app.use(jsonBodyMiddleware);
+
+let config = {
+  user: 'admin',
+  password: 'password',
+  server: 'WOLTER\\SQLEXPRESS01',
+  database: 'airportDB',
+  trustServerCertificate: true,
+};
+
+(async () => {
+  try {
+    // make sure that any items are correctly URL encoded in the connection string
+    await sql.connect(config)
+    const result = await sql.query`select * from flights`
+    console.log(result.recordset)
+  } catch (err) {
+    console.log(err);
+  }
+})()
 
 const db = {
   courses: [

@@ -1,13 +1,21 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "app.ts",
   "license": "MIT",
   "scripts": {
-    "server": "nodemon app.js"
+    "server": "nodemon app.ts"
   },
   "dependencies": {
     "express": "^4.18.1",
-    "nodemon": "^2.0.20"
+    "mssql": "^9.0.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^18.8.5",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
   }
 }
