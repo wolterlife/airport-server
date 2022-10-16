@@ -1,6 +1,6 @@
-import {BaseEntity, Column, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
+import {Column, PrimaryColumn} from "typeorm";
 
-export class User extends BaseEntity{
+export class User {
     @PrimaryColumn()
     login: string
 
