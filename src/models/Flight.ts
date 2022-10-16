@@ -1,7 +1,8 @@
+import "reflect-metadata"
 import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
-export class Flight extends BaseEntity {
+export class Flight  {
   @PrimaryGeneratedColumn()
   id: number
 

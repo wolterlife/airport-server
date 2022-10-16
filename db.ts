@@ -1,17 +1,16 @@
 import {DataSource} from "typeorm";
-import {Flight} from "./models/flight";
+import {Flight} from "./src/models/Flight";
 
 export const AppDataSource = new DataSource({
-    // @ts-ignore
-    location: "", region: "", resourceArn: "", secretArn: "",
-    driver: "mssql",
-    type: "mssql",
-    host: 'WOLTER\\SQLEXPRESS01',
-    user: 'admin',
-    password: 'password',
-    database: 'airportDB',
-    entities: [
-        __dirname + '/../**/models/flight.ts'
-    ],
-    trustServerCertificate: true
+    type: "postgres",
+    host: "localhost",
+    port: 5432,
+    username: "root",
+    password: "root",
+    database: "airport_woltersDB",
+    synchronize: true,
+    logging: true,
+    entities: [Flight],
+    subscribers: [],
+    migrations: [],
 });

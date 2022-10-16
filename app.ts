@@ -1,7 +1,6 @@
-const sql = require("mssql");
+import "reflect-metadata"
 const express = require('express');
-const router = require('./router')
-const {DataSource} = require("typeorm");
+const router = require('./src/router')
 const app = express();
 const port = 3000;
 
