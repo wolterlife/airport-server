@@ -28,11 +28,8 @@ exports.createAirline = async function (req: Request, res: Response) {
     const airline = new Airline();
     airline.nameOfAirline = req.body.nameOfAirline;
     airline.office = req.body.office;
-    await AppDataSource.getRepository(Airline).save(airline)
-    res.json({
-        nameOfAirline: req.body.nameOfAirline,
-        office: req.body.office,
-    })
+    const result = await AppDataSource.getRepository(Airline).save(airline)
+    res.json(result);
 }
 
 exports.updateAirline = async function (req: Request, res: Response) {

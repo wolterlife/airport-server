@@ -38,8 +38,8 @@ exports.createPlane = async function (req: Request, res: Response) {
     plane.year = req.body.year;
     plane.totalPlaces = req.body.totalPlaces;
     plane.airline = req.body.airline;
-    await AppDataSource.getRepository(Plane).save(plane);
-    res.json(plane);
+    const result = await AppDataSource.getRepository(Plane).save(plane);
+    res.json(result);
 }
 
 exports.updatePlane = async function (req: Request, res: Response) {
