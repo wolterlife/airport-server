@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Plane} from "./Plane";
 
 @Entity()
 export class Airline {
@@ -10,4 +11,7 @@ export class Airline {
 
     @Column()
     office: string;
+
+    @OneToMany(() => Plane, (plane) => plane.airline)
+    planes: Plane[]
 }
