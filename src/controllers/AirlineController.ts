@@ -25,6 +25,13 @@ exports.getAirlineById = async function (req: Request, res: Response) {
 }
 
 exports.createAirline = async function (req: Request, res: Response) {
+    const checkUnique = await AppDataSource.getRepository(Airline).findOneBy({ // Проверка авиакомпании на уникальность
+        nameOfAirline: req.body.nameOfAirline
+    })
+    if (checkUnique) {
+        res.status(400).json({msg: "Авиакомпания с таким названием уже существует"})
+        return;
+    }
     const airline = new Airline();
     airline.nameOfAirline = req.body.nameOfAirline;
     airline.office = req.body.office;

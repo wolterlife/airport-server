@@ -10,11 +10,11 @@ router.get('/', async (req, res) => {
   res.json("home");
 });
 
-router.get('/users', userController.getUsers);        //  GET все юзеры
-router.get('/users/:login', userController.getUserByLogin)  //  GET юзера по ID
-router.post('/users', userController.createUser)      //  POST юзера
-router.put('/users/:login', userController.updateUser)   //  PUT юзер
-router.delete('/users/:login', userController.deleteUser)//  DELETE юзер
+router.get('/users', userController.getUsers);             //  GET все юзеры
+router.get('/users/:login', userController.getUserByLogin) //  GET юзера по ID
+router.post('/users', userController.createUser)           //  POST юзера
+router.put('/users/:login', userController.updateUser)     //  PUT юзер
+router.delete('/users/:login', userController.deleteUser)  //  DELETE юзер
 
 router.get('/airlines', airlineController.getAirlines);         // GET все авиалинии
 router.get('/airlines/:id', airlineController.getAirlineById);  // GET авиалиния по ID
