@@ -15,6 +15,6 @@ export class Plane {
     @Column()
     totalPlaces: number
 
-    @ManyToOne(() => Airline, (airline) => airline.planes)
+    @ManyToOne(() => Airline, (airline) => airline.planes, {onDelete: 'CASCADE'})
     airline: Airline;
 }
