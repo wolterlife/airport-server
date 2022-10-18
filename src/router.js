@@ -1,10 +1,12 @@
 require ("reflect-metadata")
 const express = require("express");
 const router = express.Router();
+const ticketController = require("./controllers/TicketController");
 const flightController = require('./controllers/FlightController')
 const airlineController = require("./controllers/AirlineController");
 const planeController = require("./controllers/PlaneController");
 const userController = require("./controllers/UserController");
+const getAllTickets = require("./controllers/TicketController");
 
 router.get('/', async (req, res) => {
   res.json("home");
@@ -28,5 +30,7 @@ router.post('/planes/', planeController.createPlane)        //  POST самол�
 router.delete('/planes/:id', planeController.deletePlane);  //  DELETE самолёёт по ID
 router.put( '/planes/:id', planeController.updatePlane);    //  PUT самолёт
 
+router.get("/tickets/", ticketController.getAllTickets)
+router.get("/tickets/:id", ticketController.getBy)
 
 module.exports = router;

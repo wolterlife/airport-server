@@ -1,14 +1,16 @@
-import {Column, Entity, PrimaryColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn} from "typeorm";
+import {Flight} from "./Flight";
+import {User} from "./User";
 
 @Entity()
 export class Ticket {
-    @PrimaryColumn()
-    login: string;
+    @ManyToOne(() => User, (user) => user.tickets)
+    login: User;
 
-    @PrimaryColumn()
-    flight: number;
+    @ManyToOne(() => Flight, (flight) => flight.tickets)
+    flight: Flight;
 
-    @Column()
+    @PrimaryColumn() // PrimaryColumn should be two ManyToMany relations before this line
     FIO_pass: string;
 
     @Column()

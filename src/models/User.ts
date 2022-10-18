@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryColumn} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryColumn} from "typeorm";
+import {Ticket} from "./Ticket";
 
 @Entity()
 export class User {
@@ -10,5 +11,8 @@ export class User {
 
     @Column()
     role: string
+
+    @OneToMany(() => Ticket, (ticket) => ticket.login)
+    tickets: Ticket[]
 }
 
