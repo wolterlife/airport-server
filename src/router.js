@@ -6,7 +6,6 @@ const flightController = require('./controllers/FlightController')
 const airlineController = require("./controllers/AirlineController");
 const planeController = require("./controllers/PlaneController");
 const userController = require("./controllers/UserController");
-const getAllTickets = require("./controllers/TicketController");
 
 router.get('/', async (req, res) => {
   res.json("home");
@@ -32,5 +31,8 @@ router.put( '/planes/:id', planeController.updatePlane);    //  PUT самолё
 
 router.get("/tickets/", ticketController.getAllTickets)
 router.get("/tickets/:id", ticketController.getBy)
+router.post('/tickets/', ticketController.createTicket)
+
+router.post('/flights/', flightController.createFlight)
 
 module.exports = router;

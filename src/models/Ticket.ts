@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryColumn} from "typeorm";
 import {Flight} from "./Flight";
 import {User} from "./User";
 
@@ -14,7 +14,7 @@ export class Ticket {
     FIO_pass: string;
 
     @Column()
-    numPass: number;
+    numPass: string;
 
     @Column()
     numPlace: string;
