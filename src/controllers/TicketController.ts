@@ -2,13 +2,17 @@ import {Request, Response} from "express";
 import {AppDataSource} from "../../db";
 import {Ticket} from "../models/Ticket";
 
-//TODO: Подтягивание рейсов и логинов во всех гет контроллера.
-// Сделать связи и контроллер на флайт
+//TODO: Подтягивание рейсов и логинов во всех гет контроллера. [x]
+// Праймари кеи тут должны быть на рейс и логин (те что связи) []
+// Сделать связи и контроллер на флайт []
 exports.getAllTickets = async function (req: Request, res: Response) {
     const tickets = await AppDataSource
         .getRepository(Ticket)
         .createQueryBuilder("ticket")
+        .leftJoinAndSelect("ticket.login", "login")
+        .leftJoinAndSelect("ticket.flight", "flight")
         .getMany()
+    tickets.forEach(el => delete el.login.password) // Удаление поля пароль
     res.json(tickets);
 }
 
@@ -20,6 +24,8 @@ exports.getBy = async function (req: Request, res: Response) {
                 .getRepository(Ticket)
                 .createQueryBuilder("ticket")
                 .where("ticket.login = :login", {login: req.params.id})
+                .leftJoinAndSelect("ticket.login", "login")
+                .leftJoinAndSelect("ticket.flight", "flight")
                 .getMany()
             break;
         case "by-flight": // Поиск по рейсу
@@ -27,6 +33,8 @@ exports.getBy = async function (req: Request, res: Response) {
                 .getRepository(Ticket)
                 .createQueryBuilder("ticket")
                 .where("ticket.flight = :flight", {flight: +req.params.id})
+                .leftJoinAndSelect("ticket.login", "login")
+                .leftJoinAndSelect("ticket.flight", "flight")
                 .getMany()
             break;
         default: {
@@ -49,18 +57,27 @@ exports.createTicket = async function (req: Request, res: Response) {
     res.json(await AppDataSource.getRepository(Ticket).save(ticket))
 }
 
-exports.updateByLogin = async function (req: Request, res: Response) {
-
+exports.updateTicket = async function (req: Request, res: Response) {
+    const ticket = await AppDataSource
+        .getRepository(Ticket)
+        .createQueryBuilder("ticket")
+        .where("ticket.id = :id", {id: +req.params.id})
+        .getOne()
+    if (ticket) {
+        AppDataSource.getRepository(Ticket).merge(ticket, req.body)
+        res.json(await AppDataSource.getRepository(Ticket).save(ticket))
+    } else res.sendStatus(404);
 }
 
-exports.updateByFlight = async function (req: Request, res: Response) {
-
+exports.deleteTicket = async function (req: Request, res: Response) {
+    const ticket = await AppDataSource
+        .getRepository(Ticket)
+        .createQueryBuilder("ticket")
+        .where("ticket.id = :id", {id: +req.params.id})
+        .getOne()
+    if (ticket) {
+        await AppDataSource.getRepository("ticket").delete(ticket);
+        res.json(ticket)
+    } else res.sendStatus(404);
 }
 
-exports.deleteByLogin = async function (req: Request, res: Response) {
-
-}
-
-exports.deleteByFlight = async function (req: Request, res: Response) {
-
-}

@@ -12,7 +12,7 @@ app.use("/", router)
 
 AppDataSource.initialize() // init db
     .then(() => {
-        console.log('Init db');
+        console.log('DataBase init!');
     })
     .catch((error) => console.log(error));
 
