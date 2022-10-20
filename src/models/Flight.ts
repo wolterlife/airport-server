@@ -1,5 +1,7 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Ticket} from "./Ticket";
+import {Plane} from "./Plane";
+import {Airline} from "./Airline";
 
 @Entity()
 export class Flight {
@@ -8,9 +10,6 @@ export class Flight {
 
   @Column()
   flightNum: string
-
-  @Column()
-  airline: string
 
   @Column()
   airDepart: string
@@ -33,8 +32,11 @@ export class Flight {
   @Column()
   freePlaces: number
 
-  @Column()
+  @ManyToOne(() => Plane, (plane) => plane.flights)
   plane: number
+
+  @ManyToOne(() => Airline, (airline) => airline.flights)
+  airline: number
 
   @OneToMany(() => Ticket, (ticket) => ticket.flight)
   tickets: Ticket[]

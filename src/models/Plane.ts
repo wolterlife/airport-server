@@ -1,5 +1,6 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Airline} from "./Airline";
+import {Flight} from "./Flight";
 
 @Entity()
 export class Plane {
@@ -17,4 +18,7 @@ export class Plane {
 
     @ManyToOne(() => Airline, (airline) => airline.planes, {onDelete: 'CASCADE'})
     airline: Airline;
+
+    @OneToMany(() => Flight, (flight) => flight.plane)
+    flights: Flight[];
 }

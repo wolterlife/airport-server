@@ -17,3 +17,6 @@ AppDataSource.initialize() // init db
     .catch((error) => console.log(error));
 
 app.listen(port, () => {console.log(`App listen on port ${port}!`)})
+
+// TODO: Проверка на уникальность там где надо (пройтись по роутеру)
+// TODO: Проверка является ли самолёт частью авиакомпании в рейсе

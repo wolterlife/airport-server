@@ -2,9 +2,6 @@ import {Request, Response} from "express";
 import {AppDataSource} from "../../db";
 import {Ticket} from "../models/Ticket";
 
-//TODO: Подтягивание рейсов и логинов во всех гет контроллера. [x]
-// Праймари кеи тут должны быть на рейс и логин (те что связи) []
-// Сделать связи и контроллер на флайт []
 exports.getAllTickets = async function (req: Request, res: Response) {
     const tickets = await AppDataSource
         .getRepository(Ticket)

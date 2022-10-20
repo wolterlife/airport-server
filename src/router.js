@@ -26,15 +26,19 @@ router.delete('/airlines/:id', airlineController.deleteAirline) // DELETE ави
 router.get('/planes/', planeController.getPlanes);          //  GET все самолёты
 router.get('/planes/:id', planeController.getPlaneById);    //  GET самолёт по ID
 router.post('/planes/', planeController.createPlane)        //  POST самолёт
-router.delete('/planes/:id', planeController.deletePlane);  //  DELETE самолёёт по ID
+router.delete('/planes/:id', planeController.deletePlane);  //  DELETE самолёт по ID
 router.put( '/planes/:id', planeController.updatePlane);    //  PUT самолёт
 
-router.get("/tickets/", ticketController.getAllTickets)
-router.get("/tickets/:id", ticketController.getBy)
-router.post('/tickets/', ticketController.createTicket)
-router.put("/tickets/:id", ticketController.updateTicket)
-router.delete("/tickets/:id", ticketController.deleteTicket)
+router.get("/tickets/", ticketController.getAllTickets)      // GET все билеты
+router.get("/tickets/:id", ticketController.getBy)           // GET билет по ID
+router.post('/tickets/', ticketController.createTicket)      // POST билет
+router.put("/tickets/:id", ticketController.updateTicket)    // PUT билет
+router.delete("/tickets/:id", ticketController.deleteTicket) // DELETE билет по ID
 
-router.post('/flights/', flightController.createFlight)
+router.get("/flights/", flightController.getFlights)          // GET все рейсы
+router.get("/flights/:id", flightController.getFlightById)    // GET рейс по ID
+router.post('/flights/', flightController.createFlight)       // POST рейс
+router.put("/flights/:id", flightController.updateFlight)     // PUT рейс по ID
+router.delete("/flights/:id", flightController.deleteFlight)  // DELETE рейс по ID
 
 module.exports = router;
