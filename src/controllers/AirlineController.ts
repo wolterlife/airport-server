@@ -44,6 +44,13 @@ exports.updateAirline = async function (req: Request, res: Response) {
         id: +req.params.id,
     });
     if (airline) {
+        const checkUnique = await AppDataSource.getRepository(Airline).findOneBy({ // Проверка авиакомпании на уникальность
+            nameOfAirline: req.body.nameOfAirline
+        })
+        if (checkUnique) {
+            res.status(400).json({msg: "Авиакомпания с таким названием уже существует"})
+            return;
+        }
         AppDataSource.getRepository(Airline).merge(airline, req.body);
         res.json(await AppDataSource.getRepository(Airline).save(airline));
     } else res.sendStatus(404);
