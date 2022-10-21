@@ -12,11 +12,13 @@ app.use("/", router)
 
 AppDataSource.initialize() // init db
     .then(() => {
-        console.log('DataBase init!');
+        console.log('DataBase is connected!');
     })
     .catch((error) => console.log(error));
 
 app.listen(port, () => {console.log(`App listen on port ${port}!`)})
 
-// TODO: Проверка на уникальность там где надо (пройтись по роутеру)
-// TODO: Проверка является ли самолёт частью авиакомпании в рейсе
+//TODO :[ ] Расчёт свободных мест
+//      [ ] Проверка на уникальность там где надо (пройтись по роутеру)
+//      [ ] Проверка является ли самолёт частью авиакомпании при создании рейса
+//      [ ] Проверки при удалении на каскадность

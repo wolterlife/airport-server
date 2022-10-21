@@ -30,7 +30,8 @@ router.delete('/planes/:id', planeController.deletePlane);  //  DELETE само�
 router.put( '/planes/:id', planeController.updatePlane);    //  PUT самолёт
 
 router.get("/tickets/", ticketController.getAllTickets)      // GET все билеты
-router.get("/tickets/:id", ticketController.getBy)           // GET билет по ID
+router.get("/tickets/:id", ticketController.getByLogin)      // GET билеты по логину пользователя
+router.get("/tickets/:id", ticketController.getByFlight)     // GET билеты по номеру реса
 router.post('/tickets/', ticketController.createTicket)      // POST билет
 router.put("/tickets/:id", ticketController.updateTicket)    // PUT билет
 router.delete("/tickets/:id", ticketController.deleteTicket) // DELETE билет по ID
