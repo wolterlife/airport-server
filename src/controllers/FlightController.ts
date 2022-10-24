@@ -2,6 +2,8 @@ import {AppDataSource} from "../../db";
 
 const {Flight} = require("../models/Flight");
 import {Request, Response} from "express";
+import {Airline} from "../models/Airline";
+import {Plane} from "../models/Plane";
 
 exports.getFlights = async function (req: Request, res: Response) {
     const flights = await AppDataSource
@@ -25,16 +27,19 @@ exports.getFlightById = async function (req: Request, res: Response) {
     else res.sendStatus(404);
 }
 
-exports.updateFlight = async function (req: Request, res: Response) {
+exports.updateFlight = async function (req: Request, res: Response) { // !
     const flight = await AppDataSource
         .getRepository(Flight)
         .createQueryBuilder("flight")
         .where("flight.id = :id", {id: +req.params.id})
         .getOne()
-    if (flight) {
-        AppDataSource.getRepository(Flight).merge(flight, req.body)
-        res.json(await AppDataSource.getRepository(Flight).save(flight));
-    } else res.sendStatus(404);
+    if (!flight) { // Существует ли рейс
+        res.status(404).json({msg: "Указанный рейс не найден"})
+        return
+    }
+
+    AppDataSource.getRepository(Flight).merge(flight, req.body)
+    res.json(await AppDataSource.getRepository(Flight).save(flight));
 }
 
 exports.deleteFlight = async function (req: Request, res: Response) {
@@ -61,5 +66,29 @@ exports.createFlight = async function (req: Request, res: Response) {
     flight.timeDest = req.body.timeDest;
     flight.plane = req.body.plane;
     flight.freePlaces = req.body.freePlaces;
+
+    const currentAirline = await AppDataSource // Проверка авиакомпании на существование !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+        .getRepository(Airline)
+        .createQueryBuilder("airline")
+        .where("airline.id = :id", {id: +req.body.airline})
+        .getOne()
+    if (!currentAirline) {
+        res.status(404).json({msg: "Указанная авиакомпания не найдена"})
+        return
+    }
+
+    const currentPlane = await AppDataSource // Проверки на самолёт
+        .getRepository(Plane)
+        .createQueryBuilder("plane")
+        .where("plane.id = :id", {id: +req.body.plane})
+        .getOne()
+    if (!currentPlane) { // Существует ли самолёт
+        res.status(404).json({msg: "Указанный самолёт не найден"})
+        return;
+    }
+    if (currentPlane.id !== +req.body.airline) { // Входит ли самолёт в авиакомпанию рейса
+        res.status(404).json({msg: "Самолёт не входит в авиакомпанию рейса"})
+        return;
+    }
     res.json(await AppDataSource.getRepository(Flight).save(flight))
 }
