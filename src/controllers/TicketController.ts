@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
 import {AppDataSource} from "../../db";
 import {Ticket} from "../models/Ticket";
+import {Flight} from "../models/Flight";
 
 exports.getAllTickets = async function (req: Request, res: Response) {
     const tickets = await AppDataSource
@@ -72,6 +73,8 @@ exports.getByFlight = async function (req: Request, res: Response) {
 * */
 
 exports.createTicket = async function (req: Request, res: Response) {
+    const flightRepos = AppDataSource.getRepository(Flight)
+    const ticketRepos = AppDataSource.getRepository(Ticket)
     const ticket = new Ticket();
     ticket.FIO_pass = req.body.FIO_pass;
     ticket.flight = req.body.flight;
@@ -79,7 +82,19 @@ exports.createTicket = async function (req: Request, res: Response) {
     ticket.status = req.body.status;
     ticket.numPass = req.body.numPass;
     ticket.numPlace = req.body.numPlace
-    res.json(await AppDataSource.getRepository(Ticket).save(ticket))
+    let currentFlight = await flightRepos
+        .createQueryBuilder("flight")
+        .where("flight.id = :id", {id: +req.body.flight})
+        .getOne();
+    if (currentFlight?.freePlaces === 0) { // Есть ли свободные места
+        res.json({msg: "Ошибка. Билеты на текущий рейс распроданы"})
+        return;
+    }
+    if (currentFlight) {
+        flightRepos.merge(currentFlight, {freePlaces: currentFlight.freePlaces - 1}) // Уменьшение кол-во свободных билетов на 1
+        await flightRepos.save(currentFlight)
+        res.json(await ticketRepos.save(ticket))
+    } else res.status(404).json({msg: "Рейс не найден"})
 }
 
 exports.updateTicket = async function (req: Request, res: Response) {
