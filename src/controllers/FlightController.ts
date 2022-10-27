@@ -65,9 +65,8 @@ exports.createFlight = async function (req: Request, res: Response) {
     flight.dateDest = req.body.dateDest;
     flight.timeDest = req.body.timeDest;
     flight.plane = req.body.plane;
-    flight.freePlaces = req.body.freePlaces;
 
-    const currentAirline = await AppDataSource // Проверка авиакомпании на существование !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+    const currentAirline = await AppDataSource // Проверка авиакомпании на существование
         .getRepository(Airline)
         .createQueryBuilder("airline")
         .where("airline.id = :id", {id: +req.body.airline})
@@ -90,5 +89,6 @@ exports.createFlight = async function (req: Request, res: Response) {
         res.status(404).json({msg: "Самолёт не входит в авиакомпанию рейса"})
         return;
     }
+    flight.freePlaces = currentPlane.totalPlaces;
     res.json(await AppDataSource.getRepository(Flight).save(flight))
 }

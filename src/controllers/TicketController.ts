@@ -98,26 +98,39 @@ exports.createTicket = async function (req: Request, res: Response) {
 }
 
 exports.updateTicket = async function (req: Request, res: Response) {
-    const ticket = await AppDataSource
-        .getRepository(Ticket)
+    const flightRepos = AppDataSource.getRepository(Flight)
+    const ticketRepos = AppDataSource.getRepository(Ticket)
+    const ticket = await ticketRepos
         .createQueryBuilder("ticket")
         .where("ticket.id = :id", {id: +req.params.id})
         .getOne()
-    if (ticket) {
-        AppDataSource.getRepository(Ticket).merge(ticket, req.body)
-        res.json(await AppDataSource.getRepository(Ticket).save(ticket))
-    } else res.sendStatus(404);
+    if (!ticket) {
+        res.sendStatus(404).json({msg: "Билет не найден"});
+        return;
+    }
+    ticketRepos.merge(ticket, req.body)
+    res.json(await ticketRepos.save(ticket))
 }
 
-exports.deleteTicket = async function (req: Request, res: Response) {
+exports.deleteTicket = async function (req: Request, res: Response) { // todo: check
     const ticket = await AppDataSource
         .getRepository(Ticket)
         .createQueryBuilder("ticket")
         .where("ticket.id = :id", {id: +req.params.id})
         .getOne()
-    if (ticket) {
-        await AppDataSource.getRepository("ticket").delete(ticket);
+    if (!ticket) {
+        res.sendStatus(404).json({msg: "Билет не найден"})
+        return;
+    }
+    let currentFlight = await AppDataSource
+        .getRepository(Flight)
+        .createQueryBuilder("flight")
+        .where("flight.id = :id", {id: ticket.flight})
+        .getOne();
+    if (currentFlight) {
+        AppDataSource.getRepository(Flight).merge(currentFlight, {freePlaces: currentFlight.freePlaces + 1})
+        await AppDataSource.getRepository(Ticket).delete(ticket);
         res.json(ticket)
-    } else res.sendStatus(404);
+    } else res.status(404).json({msg: "Рейс не найден"})
 }
 
