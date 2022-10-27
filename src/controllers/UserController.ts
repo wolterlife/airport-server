@@ -47,7 +47,7 @@ exports.updateUser = async function (req: Request, res: Response) {
     if (user) {
         AppDataSource.getRepository(User).merge(user, req.body)
         res.json(await AppDataSource.getRepository(User).save(user))
-    } else res.sendStatus(404);
+    } else res.status(404).json({msg: "Пользователь не найден"});
 }
 
 exports.deleteUser = async function (req: Request, res: Response) {
@@ -59,5 +59,5 @@ exports.deleteUser = async function (req: Request, res: Response) {
     if (user) {
         await AppDataSource.getRepository(User).delete(user)
         res.json(user)
-    } else res.sendStatus(404);
+    } else res.status(404).json({msg: "Пользователь не найден"});
 }
