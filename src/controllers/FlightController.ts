@@ -70,6 +70,7 @@ exports.createFlight = async function (req: Request, res: Response) {
         .getRepository(Airline)
         .createQueryBuilder("airline")
         .where("airline.id = :id", {id: +req.body.airline})
+        .leftJoinAndSelect("airline.planes", "planes")
         .getOne()
     if (!currentAirline) {
         res.status(404).json({msg: "Указанная авиакомпания не найдена"})
@@ -85,8 +86,8 @@ exports.createFlight = async function (req: Request, res: Response) {
         res.status(404).json({msg: "Указанный самолёт не найден"})
         return;
     }
-    if (currentPlane.id !== +req.body.airline) { // Входит ли самолёт в авиакомпанию рейса
-        res.status(404).json({msg: "Самолёт не входит в авиакомпанию рейса"})
+    if (!currentAirline.planes.find(el => el.id === currentPlane.id)) { // Входит ли самолёт в авиакомпанию рейса
+        res.status(400).json({msg: "Самолёт не входит в авиакомпанию рейса"})
         return;
     }
     flight.freePlaces = currentPlane.totalPlaces;
