@@ -91,9 +91,10 @@ exports.createTicket = async function (req: Request, res: Response) {
         return;
     }
     if (currentFlight) {
-        // Генерация места // TODO CHECK
-        let possiblePlaces = "ABCD";
-        ticket.numPlace = currentFlight.freePlaces + possiblePlaces.charAt(Math.random() * possiblePlaces.length+1);
+        // Генерация места
+        let letter = "ABCD".charAt(Math.random() * "ABCD".length)
+        console.log(letter);
+        ticket.numPlace = currentFlight.freePlaces + letter;
 
         flightRepos.merge(currentFlight, {freePlaces: currentFlight.freePlaces - 1}) // Уменьшение кол-во свободных билетов на 1
         await flightRepos.save(currentFlight)
