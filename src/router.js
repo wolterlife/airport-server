@@ -6,14 +6,17 @@ const flightController = require('./controllers/FlightController')
 const airlineController = require("./controllers/AirlineController");
 const planeController = require("./controllers/PlaneController");
 const userController = require("./controllers/UserController");
+const authController = require("./controllers/AuthController");
 
 router.get('/', async (req, res) => {
   res.json("home");
 });
 
+router.post('/login', authController.login)                 //  Авторизация
+router.post('/registration', authController.registration)   //  Регистрация
+
 router.get('/users', userController.getUsers);             //  GET все юзеры
 router.get('/users/:login', userController.getUserByLogin) //  GET юзера по ID
-router.post('/users', userController.createUser)           //  POST юзера
 router.put('/users/:login', userController.updateUser)     //  PUT юзер
 router.delete('/users/:login', userController.deleteUser)  //  DELETE юзер
 

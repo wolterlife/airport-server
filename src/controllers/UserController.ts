@@ -20,24 +20,6 @@ exports.getUserByLogin = async function (req: Request, res: Response) {
     else res.sendStatus(404);
 }
 
-exports.createUser = async function (req: Request, res: Response) {
-    const checkUnique = await AppDataSource // Проверка на уникальность логина
-        .getRepository(User)
-        .createQueryBuilder("user")
-        .where("user.login = :login", {login: req.body.login})
-        .getOne()
-    if (checkUnique) {
-        res.status(400).json({msg: "Данный логин уже занят"})
-        return;
-    }
-    const user = new User();
-    user.login = req.body.login;
-    user.password = req.body.password;
-    user.role = req.body.role;
-    const result = await AppDataSource.getRepository(User).save(user);
-    res.send(result);
-}
-
 exports.updateUser = async function (req: Request, res: Response) {
     const user = await AppDataSource
         .getRepository(User)
