@@ -103,7 +103,6 @@ exports.createTicket = async function (req: Request, res: Response) {
 }
 
 exports.updateTicket = async function (req: Request, res: Response) {
-    const flightRepos = AppDataSource.getRepository(Flight)
     const ticketRepos = AppDataSource.getRepository(Ticket)
     const ticket = await ticketRepos
         .createQueryBuilder("ticket")
@@ -117,25 +116,29 @@ exports.updateTicket = async function (req: Request, res: Response) {
     res.json(await ticketRepos.save(ticket))
 }
 
-exports.deleteTicket = async function (req: Request, res: Response) { // todo: check
-    const ticket = await AppDataSource
-        .getRepository(Ticket)
+exports.deleteTicket = async function (req: Request, res: Response) {
+    const reposTicket = AppDataSource.getRepository(Ticket);
+    const reposFlight = AppDataSource.getRepository(Flight);
+
+    const ticket = await reposTicket // Поиск билета
         .createQueryBuilder("ticket")
         .where("ticket.id = :id", {id: +req.params.id})
+        .leftJoinAndSelect("ticket.flight", "flight")
         .getOne()
     if (!ticket) {
-        res.sendStatus(404).json({msg: "Билет не найден"})
+        res.status(404).json({msg: "Билет не найден"});
         return;
     }
-    let currentFlight = await AppDataSource
-        .getRepository(Flight)
+
+    const currentFlight = await reposFlight // Поиск рейса для увеличения свободных мест
         .createQueryBuilder("flight")
-        .where("flight.id = :id", {id: ticket.flight})
+        .where("flight.id = :id", {id: ticket.flight.id})
         .getOne();
     if (currentFlight) {
-        AppDataSource.getRepository(Flight).merge(currentFlight, {freePlaces: currentFlight.freePlaces + 1})
-        await AppDataSource.getRepository(Ticket).delete(ticket);
-        res.json(ticket)
-    } else res.status(404).json({msg: "Рейс не найден"})
+        reposFlight.merge(currentFlight, {freePlaces: currentFlight.freePlaces + 1})
+        await reposFlight.save(currentFlight);
+        await reposTicket.delete(ticket);
+        res.json(ticket);
+    } else res.status(404).json({msg: "Рейс связанный с билетом не найден. Не удалось удалить билет"})
 }
 
