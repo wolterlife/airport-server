@@ -3,6 +3,7 @@ import {AppDataSource} from "../../db";
 import {User} from "../models/User";
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+const {secretKey} = require('../../config')
 
 exports.login = async function (req: Request, res: Response) {
     const user = await AppDataSource
@@ -12,7 +13,7 @@ exports.login = async function (req: Request, res: Response) {
         .getOne()
     if (!user) return res.status(401).json({msg: `Пользователь ${req.body.login} не найден`})
     const isPassValid = bcrypt.compareSync(req.body.password, user.password);
-    const token = jwt.sign({id: user.login}, "SECRET_KEY", {expiresIn: "24h"})
+    const token = jwt.sign({login: user.login, role: user.role}, secretKey, {expiresIn: "24h"})
     if (isPassValid) res.json({
         user: {
             login: user.login,
@@ -21,7 +22,7 @@ exports.login = async function (req: Request, res: Response) {
         token,
     })
     else return res.json({msg: "Неправильный пароль"})
-        // https://youtu.be/o30BcvKwcvg
+        // https://youtu.be/o30BcvKwcvg front-end
 }
 
 exports.registration = async function (req: Request, res: Response) {
@@ -30,12 +31,13 @@ exports.registration = async function (req: Request, res: Response) {
         .createQueryBuilder("user")
         .where("user.login = :login", {login: req.body.login})
         .getOne()
-    if (checkUnique) {return (res.status(400).json({msg: "Данный логин уже занят"}))}
+    if (checkUnique) {
+        return res.status(400).json({msg: "Данный логин уже занят"})
+    }
     const user = new User();
-    const hashPassword = bcrypt.hashSync(req.body.password, 7);
     user.login = req.body.login;
-    user.password = hashPassword;
-    user.role = req.body.role;
+    user.password = bcrypt.hashSync(req.body.password, 7);
+    user.role = "passenger";
     await AppDataSource.getRepository(User).save(user);
     res.json({msg: "Пользователь успешно зарегестрирован"})
 }

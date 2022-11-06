@@ -1,9 +1,9 @@
 import "reflect-metadata"
 import {AppDataSource} from "./db";
+const {port} = require('./config')
 const express = require('express');
 const router = require('./src/router')
 const app = express();
-const port = 3000;
 
 const jsonBodyMiddleware = express.json();
 app.use(jsonBodyMiddleware);
