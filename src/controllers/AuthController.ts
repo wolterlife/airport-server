@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {AppDataSource} from "../../db";
 import {User} from "../models/User";
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 
 exports.login = async function (req: Request, res: Response) {
     const user = await AppDataSource
@@ -11,8 +12,16 @@ exports.login = async function (req: Request, res: Response) {
         .getOne()
     if (!user) return res.status(401).json({msg: `Пользователь ${req.body.login} не найден`})
     const isPassValid = bcrypt.compareSync(req.body.password, user.password);
-    if (isPassValid) res.json({msg: "good"})
-    else res.json({msg: "bad"})
+    const token = jwt.sign({id: user.login}, "SECRET_KEY", {expiresIn: "24h"})
+    if (isPassValid) res.json({
+        user: {
+            login: user.login,
+            role: user.role,
+        },
+        token,
+    })
+    else return res.json({msg: "Неправильный пароль"})
+        // https://youtu.be/o30BcvKwcvg
 }
 
 exports.registration = async function (req: Request, res: Response) {
