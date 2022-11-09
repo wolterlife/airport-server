@@ -9,8 +9,11 @@ export class User {
     @Column()
     password?: string
 
+    // @Column("string", { array: true })
+    // roles: string[]
+
     @Column()
-    role: string
+    roles: string
 
     @OneToMany(() => Ticket, (ticket) => ticket.login)
     tickets: Ticket[]

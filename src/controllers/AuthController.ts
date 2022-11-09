@@ -13,11 +13,11 @@ exports.login = async function (req: Request, res: Response) {
         .getOne()
     if (!user) return res.status(401).json({msg: `Пользователь ${req.body.login} не найден`})
     const isPassValid = bcrypt.compareSync(req.body.password, user.password);
-    const token = jwt.sign({login: user.login, role: user.role}, secretKey, {expiresIn: "24h"})
+    const token = jwt.sign({login: user.login, roles: user.roles}, secretKey, {expiresIn: "24h"})
     if (isPassValid) res.json({
         user: {
             login: user.login,
-            role: user.role,
+            roles: user.roles,
         },
         token,
     })
@@ -37,7 +37,7 @@ exports.registration = async function (req: Request, res: Response) {
     const user = new User();
     user.login = req.body.login;
     user.password = bcrypt.hashSync(req.body.password, 7);
-    user.role = "passenger";
+    user.roles = "passenger";
     await AppDataSource.getRepository(User).save(user);
     res.json({msg: "Пользователь успешно зарегестрирован"})
 }
