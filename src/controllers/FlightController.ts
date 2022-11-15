@@ -73,10 +73,8 @@ exports.createFlight = async function (req: Request, res: Response) {
         .leftJoinAndSelect("airline.planes", "planes")
         .getOne()
     if (!currentAirline) {
-        res.status(404).json({msg: "Указанная авиакомпания не найдена"})
-        return
+        return res.status(404).json({msg: `Указанная авиакомпания не найдена`})
     }
-
     const currentPlane = await AppDataSource // Проверки на самолёт
         .getRepository(Plane)
         .createQueryBuilder("plane")

@@ -47,7 +47,7 @@ exports.updateAirline = async function (req: Request, res: Response) {
         const checkUnique = await AppDataSource.getRepository(Airline).findOneBy({ // Проверка авиакомпании на уникальность
             nameOfAirline: req.body.nameOfAirline
         })
-        if (checkUnique && (req.body.nameOfAirline !== undefined)) {
+        if (checkUnique && (airline.nameOfAirline !== req.body.nameOfAirline)) {
             res.status(400).json({msg: "Авиакомпания с таким названием уже существует"})
             return;
         }

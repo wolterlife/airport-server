@@ -33,6 +33,7 @@ exports.getPlaneById = async function (req: Request, res: Response) {
 }
 
 exports.createPlane = async function (req: Request, res: Response) {
+    if (req.body.airline <= 0) return res.status(404).json({msg: "Авиакомпания не найдена"})
     const plane = new Plane();
     plane.model = req.body.model;
     plane.year = req.body.year;

@@ -9,9 +9,6 @@ export class User {
     @Column()
     password?: string
 
-    // @Column("string", { array: true })
-    // roles: string[]
-
     @Column()
     roles: string
 

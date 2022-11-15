@@ -6,8 +6,7 @@ const router = require('./src/router')
 const cors = require("cors")
 const app = express();
 
-const jsonBodyMiddleware = express.json();
-app.use(jsonBodyMiddleware);
+app.use(express.json());
 app.use(cors())
 
 app.use("/", router)
