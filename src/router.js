@@ -19,7 +19,7 @@ router.post('/registration', authController.registration)   //  Регистра
 router.get('/users', authMiddleware(["admin", "crew"]), userController.getUsers);             //  GET все юзеры
 router.get('/users/:login', authMiddleware(["admin", "crew"]), userController.getUserByLogin) //  GET юзера по ID
 router.put('/users/:login', authMiddleware(["admin"]), userController.updateUser)     //  PUT юзер
-router.delete('/users/:login', authMiddleware(["admin", "crew", "passenger"]), userController.deleteUser)  //  DELETE юзер
+router.delete('/users/:login', authMiddleware(["admin"]), userController.deleteUser)  //  DELETE юзер
 
 router.get('/airlines', authMiddleware(["admin", "crew"]), airlineController.getAirlines);         // GET все авиалинии
 router.get('/airlines/:id', authMiddleware(["admin", "crew"]), airlineController.getAirlineById);  // GET авиалиния по ID
@@ -33,11 +33,11 @@ router.post('/planes/', authMiddleware(["admin", "crew"]), planeController.creat
 router.delete('/planes/:id', authMiddleware(["admin", "crew"]), planeController.deletePlane);  //  DELETE самолёт по ID
 router.put( '/planes/:id', authMiddleware(["admin", "crew"]), planeController.updatePlane);    //  PUT самолёт
 
-router.get("/tickets/", authMiddleware(["admin", "crew", "passenger"]), ticketController.getAllTickets)      // GET все билеты
+router.get("/tickets/", authMiddleware(["admin", "crew"]), ticketController.getAllTickets)      // GET все билеты
 router.get("/tickets/:id", authMiddleware(["admin", "crew", "passenger"]), ticketController.getBy)           // GET билет по ID
 router.post('/tickets/', authMiddleware(["admin", "crew", "passenger"]), ticketController.createTicket)      // POST билет
-router.put("/tickets/:id", authMiddleware(["admin", "crew"]), ticketController.updateTicket)                  // PUT билет +
-router.delete("/tickets/:id", authMiddleware(["admin", "crew", "passenger"]), ticketController.deleteTicket) // DELETE билет по ID
+router.put("/tickets/:id", authMiddleware(["admin", "crew"]), ticketController.updateTicket)                  // PUT билет
+router.delete("/tickets/:id", authMiddleware(["admin", "crew"]), ticketController.deleteTicket) // DELETE билет по ID
 
 router.get("/flights/", flightController.getFlights)          // GET все рейсы
 router.get("/flights/:id", flightController.getFlightById)    // GET рейс по ID

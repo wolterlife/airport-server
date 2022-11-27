@@ -3,6 +3,7 @@ import {Request, Response} from "express";
 import {AppDataSource} from "../../db";
 
 exports.getAirlines = async function (req: Request, res: Response) {
+    console.log(req);
     const allAirlines = await AppDataSource.getRepository(Airline).find({
         relations: {
             planes: true

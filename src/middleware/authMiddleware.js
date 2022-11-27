@@ -23,8 +23,10 @@ module.exports = function (listRoles) {
         .where("user.login = :login", {login: login})
         .getOne();
       let roles = currentUser.roles;
+      req.roles = roles;
+      console.log(req);
 
-      // Проверка, содержит ли список роей пользователя разрешённую роль
+      // Проверка, содержит ли список ролей пользователя разрешённую роль
       let hasRole = false
       roles.split(' ').forEach(role => {
         if (listRoles.includes(role)) {
