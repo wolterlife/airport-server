@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {AppDataSource} from "../../db";
 import {Ticket} from "../models/Ticket";
 import {Flight} from "../models/Flight";
+import {User} from "../models/User";
 
 exports.getAllTickets = async function (req: Request, res: Response) {
     const tickets = await AppDataSource
@@ -75,12 +76,19 @@ exports.getByFlight = async function (req: Request, res: Response) {
 exports.createTicket = async function (req: Request, res: Response) {
     const flightRepos = AppDataSource.getRepository(Flight)
     const ticketRepos = AppDataSource.getRepository(Ticket)
+    const userRepos = AppDataSource.getRepository(User)
     const ticket = new Ticket();
     ticket.FIO_pass = req.body.FIO_pass;
     ticket.flight = req.body.flight;
     ticket.login = req.body.login;
     ticket.status = req.body.status;
     ticket.numPass = req.body.numPass;
+
+    let user = await userRepos
+        .createQueryBuilder("user")
+        .where("user.login = :login", {login: req.body.login})
+        .getOne()
+    if (!user) return res.status(404).json({msg: "Пользователь не найден"})
 
     let currentFlight = await flightRepos
         .createQueryBuilder("flight")
@@ -103,6 +111,12 @@ exports.createTicket = async function (req: Request, res: Response) {
 }
 
 exports.updateTicket = async function (req: Request, res: Response) {
+    let user = await AppDataSource.getRepository(User)
+        .createQueryBuilder("user")
+        .where("user.login = :login", {login: req.body.login})
+        .getOne()
+    if (!user && req.body.login) return res.status(404).json({msg: "Пользователь не найден"})
+
     const ticketRepos = AppDataSource.getRepository(Ticket)
     const ticket = await ticketRepos
         .createQueryBuilder("ticket")

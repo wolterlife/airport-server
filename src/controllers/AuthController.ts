@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const {secretKey} = require('../../config')
 
 exports.login = async function (req: Request, res: Response) {
+    console.log(req.body);
     const user = await AppDataSource
         .getRepository(User)
         .createQueryBuilder("user")
@@ -39,5 +40,5 @@ exports.registration = async function (req: Request, res: Response) {
     user.password = bcrypt.hashSync(req.body.password, 7);
     user.roles = "passenger";
     await AppDataSource.getRepository(User).save(user);
-    res.json({msg: "Пользователь успешно зарегестрирован"})
+    res.json({msg: "Пользователь успешно зарегистрирован"})
 }
