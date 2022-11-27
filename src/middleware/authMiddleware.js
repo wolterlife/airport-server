@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken')
 const {secretKey} = require('../../config')
+const {AppDataSource} = require("../../db");
+const {User} = require("../models/User");
 
 
 module.exports = function (listRoles) {
-  return function (req, res, next) {
+  return async function (req, res, next) {
     if (req.method === "OPTIONS") {
       next()
     }
@@ -13,7 +15,16 @@ module.exports = function (listRoles) {
       if (!token) {
         return res.status(403).json({message: "Пользователь не авторизован"})
       }
-      const {roles} = jwt.verify(token, secretKey)
+
+      // Получение ролей текущего пользователя по токену
+      const {login} = jwt.verify(token, secretKey)
+      let currentUser = await AppDataSource.getRepository(User)
+        .createQueryBuilder("user")
+        .where("user.login = :login", {login: login})
+        .getOne();
+      let roles = currentUser.roles;
+
+      // Проверка, содержит ли список роей пользователя разрешённую роль
       let hasRole = false
       roles.split(' ').forEach(role => {
         if (listRoles.includes(role)) {

@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken')
 const {secretKey} = require('../../config')
 
 exports.login = async function (req: Request, res: Response) {
-    console.log(req.body);
     const user = await AppDataSource
         .getRepository(User)
         .createQueryBuilder("user")
