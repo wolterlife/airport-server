@@ -3,6 +3,8 @@ import {AppDataSource} from "../../db";
 import {Ticket} from "../models/Ticket";
 import {Flight} from "../models/Flight";
 import {User} from "../models/User";
+const jwt = require('jsonwebtoken')
+const {secretKey} = require('../../config')
 
 exports.getAllTickets = async function (req: Request, res: Response) {
     const tickets = await AppDataSource
@@ -74,19 +76,20 @@ exports.getByFlight = async function (req: Request, res: Response) {
 * */
 
 exports.createTicket = async function (req: Request, res: Response) {
+    const {login} = jwt.verify(req.body.login, secretKey)
     const flightRepos = AppDataSource.getRepository(Flight)
     const ticketRepos = AppDataSource.getRepository(Ticket)
     const userRepos = AppDataSource.getRepository(User)
     const ticket = new Ticket();
     ticket.FIO_pass = req.body.FIO_pass;
     ticket.flight = req.body.flight;
-    ticket.login = req.body.login;
-    ticket.status = req.body.status;
+    ticket.login = login;
+    ticket.status = "Забронирован";
     ticket.numPass = req.body.numPass;
 
     let user = await userRepos
         .createQueryBuilder("user")
-        .where("user.login = :login", {login: req.body.login})
+        .where("user.login = :login", {login: login})
         .getOne()
     if (!user) return res.status(404).json({msg: "Пользователь не найден"})
 
@@ -101,7 +104,6 @@ exports.createTicket = async function (req: Request, res: Response) {
     if (currentFlight) {
         // Генерация места
         let letter = "ABCD".charAt(Math.random() * "ABCD".length)
-        console.log(letter);
         ticket.numPlace = currentFlight.freePlaces + letter;
 
         flightRepos.merge(currentFlight, {freePlaces: currentFlight.freePlaces - 1}) // Уменьшение кол-во свободных билетов на 1
